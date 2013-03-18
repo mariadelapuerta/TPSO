@@ -1,0 +1,13 @@
+
+void receive(char* file);
+void send(int id);
+
+typedef struct {
+
+	char** file;
+	int fileSize;
+	int fileId;
+	int numCopies;
+	int state;
+	int clientId;
+}
