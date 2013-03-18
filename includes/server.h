@@ -8,8 +8,11 @@ typedef struct {
 	int clientId;
 } printItem;
 
+/* Producer*/
 void receive(char* file);
 void send(int id);
+
+/*Consumer*/
 void push(printItem item);
 printItem pop();
 int isEmpty();

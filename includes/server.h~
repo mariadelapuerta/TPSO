@@ -1,7 +1,3 @@
-
-void receive(char* file);
-void send(int id);
-
 typedef struct {
 
 	char** file;
@@ -10,4 +6,13 @@ typedef struct {
 	int numCopies;
 	int state;
 	int clientId;
-}
+} printItem;
+
+void receive(char* file);
+void send(int id);
+void push(printItem item);
+printItem pop();
+int isEmpty();
+printItem search(int fileId);
+
+
