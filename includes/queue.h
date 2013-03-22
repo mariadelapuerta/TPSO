@@ -1,21 +1,25 @@
-#include "server.h"
+#include <stdio.h>
+#include <stdlib.h>
 
-typedef struct header header;
+/* Estructuras */
 
-typedef struct {
-	void* item;
-	node* next;
-} node;
+typedef struct node{
+	void * item;
+	struct node * next;
+}node;
 
-typedef struct {
-
-	node* tail;
-	node* head;
+typedef struct header{
+	node* last;
+	node* first;
 } header;
 
+typedef header * header_t;
+typedef node * node_t;
 
-void push(void* item);
-void* pop();
-int isEmpty();
-void* search(int fileId);
+/* Funciones */
+header_t createList(void);
+void push(header_t list, void * item);
+void* pop(header_t list);
+int isEmpty(header_t list);
 
+void search(void);
