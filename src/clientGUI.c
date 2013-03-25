@@ -1,7 +1,17 @@
 #include <stdio.h>
 #include <string.h>
+#include <fcntl.h>
+#include <sys/stat.h>
+#include <sys/types.h>
+#include <unistd.h>
+#include "../includes/structs.h"
 
 /* Imprime el Menu en pantalla */
+
+
+
+/* Imprime el Menu en pantalla */
+
 void printMenu(void){
 	printf("*************************\n");
 	printf("* Gestor de Impresiones *\n");
@@ -15,39 +25,63 @@ void printMenu(void){
 	printf("6- Salir\n");
 }
 
-int printJob(void){
-	return 1;
+
+int printJob(char * file, int qty){
+    
+    FILE * fd;
+    client_job job = (client *) malloc(sizeof(client));
+     
+    job->client_id = getpid();
+    job->qty = qty;
+    strcpy(job->file,file);
+ 
+    /* Crea el pipe */
+    mkfifo(PATH, 0666);
+    
+    if((fd = fopen(PATH, "w")) == NULL) {
+	return -1;
+    }
+    
+    /* Invertir el pipe */
+
+    fwrite(job, sizeof(client), 1, fd);
+
+    fclose(fd);
+    
+    /* remove the FIFO */
+    
+    unlink(PATH);
+
+    /* Libera la memoria */
+    free(job);
+
+    return 1;
 }
 
+
 void c_print(void){
-	char path[1];
-	int *qty;
-	int id;
-	FILE * file;
+	char path[MAX_PATH];
+	int qty = 0;
+	int id = 0;
 
 	/* Ingresar directorio del archivo*/
 	printf("Directorio del archivo:\n");
-	scanf("%s",path);
-	
-	/* Verificar que exista el archivo */
-	if ((file = fopen(path, "r")) == NULL) {
-    		printf("El archivo no existe.\n");
-		return;
-    	}
+	scanf("%s", path);
 
-	/* Ingresar cantidad de copias */
+	/*Ingresar cantidad de copias*/ 
 	printf("Cantidad de copias:\n");
-	scanf("%d", qty);
+	scanf("%d", &qty); 
+	
+	id = printJob(path, qty);
 
-	/* Llamar a Print back y que retorne el ID del trabajo*/
-
-	id = printJob();
+   	printf("ID:%d", id);
 
 	if(id == 0){
 		printf("El servidor no esta disponible\n");
 	}else{
 		printf("El archivo se imprimira su id es: %d\n", id);
 	}
+
 
 }
 
@@ -144,14 +178,20 @@ void c_continue(){
 
 /* Ejecuta el Cliente */
 int main(void){
-	char command[1];
+    
+	char command[256];
 	system("clear");
 	printMenu();
+    
 	while(1){
-		scanf("%s", command);
-			
+
+		scanf("%s", command);	
 		if(strcmp(command,"Imprimir") == 0){
 			c_print();
+
+           // printf("Salio del print\n");
+
+
 		}else if (strcmp(command,"Consultar") == 0){
 			c_status();
 		}else if (strcmp(command,"Pausar") == 0){
@@ -165,6 +205,7 @@ int main(void){
 		}else{
 			printf("Comando invalido\n");
 		}
+        printf("fin while\n");
 	}
 	return 0;
 }

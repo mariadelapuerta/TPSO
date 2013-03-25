@@ -1,5 +1,48 @@
-include <stdio.c>
+#include <stdio.h>
+//#include "../includes/server.h"
+#include "../includes/queue.h"
+#include "../includes/structs.h"
+#include <fcntl.h>
+#include <sys/stat.h>
+#include <sys/types.h>
+#include <unistd.h>
 
-include <client.h>
 
+#define MAX_BUF 1024
 
+int main(void){
+    header_t currentJobs;
+    header_t printedJobs;
+    FILE * file;
+    int i=0;
+    //currentJobs = createList();
+    //printedJobs = createList();
+    client_job job;
+    FILE * fd;
+    char mesg[MAX_BUF];
+    while(1){
+        sleep(1);
+        if ((file = fopen(PATH, "r")) != NULL) {
+	    job = (client *) malloc(sizeof(client));
+            printf("1\n");
+            fd = fopen(PATH, "r");
+            printf("2\n");
+//            fread(mesg, MAX_BUF, 1, fd);
+            fread(job,sizeof(client), 1, fd);
+	    printf("ID: %d\n", job->client_id);
+	    printf("Qty: %d\n", job->qty);
+	    printf("File: %s\n", job->file);
+	    /*for(i; i < MAX_BUF; i++)
+                printf("%c",mesg[i]);*/
+            printf("3\n");
+            //printf("Received: %s %i\n",job->file, job->client_id);
+            printf("4\n");
+            fclose(fd);
+	    free(job);
+            printf("5\n");
+        }else{
+            printf("El archivo no existe\n");
+
+        }
+    }
+}
